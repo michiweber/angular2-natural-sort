@@ -17,40 +17,40 @@ export class NaturalSort {
     private static oFyNcL: any;
 
     public static SORT(a: any, b: any): number {
-        const x = this.i(a);
-        const y = this.i(b);
+        const x = NaturalSort.i(a);
+        const y = NaturalSort.i(b);
 
-        const xN = x.replace(this.re, '\0$1\0').replace(/\0$/,'').replace(/^\0/,'').split('\0');
-        const yN = y.replace(this.re, '\0$1\0').replace(/\0$/,'').replace(/^\0/,'').split('\0');
+        const xN = x.replace(NaturalSort.re, '\0$1\0').replace(/\0$/,'').replace(/^\0/,'').split('\0');
+        const yN = y.replace(NaturalSort.re, '\0$1\0').replace(/\0$/,'').replace(/^\0/,'').split('\0');
 
-        const xD = parseInt((<any>x).match(this.hre), 16) || (xN.length !== 1 && Date.parse(x));
-        const yD = parseInt((<any>y).match(this.hre), 16) || xD && y.match(this.dre) && Date.parse(y) || null;
+        const xD = parseInt((<any>x).match(NaturalSort.hre), 16) || (xN.length !== 1 && Date.parse(x));
+        const yD = parseInt((<any>y).match(NaturalSort.hre), 16) || xD && y.match(NaturalSort.dre) && Date.parse(y) || null;
 
         if (yD) {
             if (xD < yD) { return -1; }
             else if (xD > yD) { return 1; }
         }
         for(var cLoc = 0, xNl = xN.length, yNl = yN.length, numS = Math.max(xNl, yNl); cLoc < numS; cLoc++) {
-            this.oFxNcL = this.normChunk(xN[cLoc] || '', xNl);
-            this.oFyNcL = this.normChunk(yN[cLoc] || '', yNl);
-            if (isNaN(this.oFxNcL) !== isNaN(this.oFyNcL)) {
-                return isNaN(this.oFxNcL) ? 1 : -1;
+            NaturalSort.oFxNcL = NaturalSort.normChunk(xN[cLoc] || '', xNl);
+            NaturalSort.oFyNcL = NaturalSort.normChunk(yN[cLoc] || '', yNl);
+            if (isNaN(NaturalSort.oFxNcL) !== isNaN(NaturalSort.oFyNcL)) {
+                return isNaN(NaturalSort.oFxNcL) ? 1 : -1;
             }
-            if (/[^\x00-\x80]/.test(this.oFxNcL + this.oFyNcL) && this.oFxNcL.localeCompare) {
-                var comp = this.oFxNcL.localeCompare(this.oFyNcL);
+            if (/[^\x00-\x80]/.test(NaturalSort.oFxNcL + NaturalSort.oFyNcL) && NaturalSort.oFxNcL.localeCompare) {
+                var comp = NaturalSort.oFxNcL.localeCompare(NaturalSort.oFyNcL);
                 return comp / Math.abs(comp);
             }
-            if (this.oFxNcL < this.oFyNcL) { return -1; }
-            else if (this.oFxNcL > this.oFyNcL) { return 1; }
+            if (NaturalSort.oFxNcL < NaturalSort.oFyNcL) { return -1; }
+            else if (NaturalSort.oFxNcL > NaturalSort.oFyNcL) { return 1; }
         }
     }
 
     private static i(s: any) {
-        return (NaturalSort.SORT.insensitive && ('' + s).toLowerCase() || '' + s).replace(this.sre, '');
+        return (('' + s).toLowerCase() || '' + s).replace(NaturalSort.sre, '');
     }
 
     private static normChunk(s: any, l: any) {
-        return (!s.match(this.ore) || l == 1) && parseFloat(s) || s.replace(this.snre, ' ').replace(this.sre, '') || 0;
+        return (!s.match(NaturalSort.ore) || l == 1) && parseFloat(s) || s.replace(NaturalSort.snre, ' ').replace(NaturalSort.sre, '') || 0;
     }
 
 }

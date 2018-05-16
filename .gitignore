@@ -12,3 +12,5 @@ Thumbs.db
 *.d.ts
 
 .history
+!/karma.conf.js
+!/gruntfile.js

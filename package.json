@@ -3,8 +3,7 @@
   "version": "1.0.5",
   "description": "An angular2 approach for javascript-natural-sort",
   "scripts": {
-    "grunt": "grunt",
-    "start": "node ./dist/index"
+    "grunt": "grunt"
   },
   "repository": {
     "type": "git",

@@ -7,50 +7,109 @@
 
 export class NaturalSort {
 
-    private static re = /(^([+\-]?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?(?=\D|\s|$))|^0x[\da-fA-F]+$|\d+)/g;
-    private static sre = /^\s+|\s+$/g;
-    private static snre = /\s+/g;
-    private static dre = /(^([\w ]+,?[\w ]+)?[\w ]+,?[\w ]+\d+:\d+(:\d+)?[\w ]?|^\d{1,4}[\/\-]\d{1,4}[\/\-]\d{1,4}|^\w+, \w+ \d+, \d{4})/;
-    private static hre = /^0x[0-9a-f]+$/i;
-    private static ore = /^0/;
-    private static oFxNcL: any;
-    private static oFyNcL: any;
+  /* Regular Expressions */
+  private static re = /(^([+\-]?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?(?=\D|\s|$))|^0x[\da-fA-F]+$|\d+)/g;
+  private static sre = /^\s+|\s+$/g;
+  private static snre = /\s+/g;
+  private static dre = /(^([\w ]+,?[\w ]+)?[\w ]+,?[\w ]+\d+:\d+(:\d+)?[\w ]?|^\d{1,4}[\/\-]\d{1,4}[\/\-]\d{1,4}|^\w+, \w+ \d+, \d{4})/;
+  private static hre = /^0x[0-9a-f]+$/i;
+  private static ore = /^0/;
+  private static dot = /^\d+(?:\.\d+)+$/;
 
-    public static SORT(a: any, b: any): number {
-        const x = NaturalSort.i(a);
-        const y = NaturalSort.i(b);
+  public static SORT(a: any, b: any, insensitive = false): number {
 
-        const xN = x.replace(NaturalSort.re, '\0$1\0').replace(/\0$/,'').replace(/^\0/,'').split('\0');
-        const yN = y.replace(NaturalSort.re, '\0$1\0').replace(/\0$/,'').replace(/^\0/,'').split('\0');
+    const x = NaturalSort.i(a, insensitive);
+    const y = NaturalSort.i(b, insensitive);
 
-        const xD = parseInt((<any>x).match(NaturalSort.hre), 16) || (xN.length !== 1 && Date.parse(x));
-        const yD = parseInt((<any>y).match(NaturalSort.hre), 16) || xD && y.match(NaturalSort.dre) && Date.parse(y) || null;
+    const xN = x.replace(NaturalSort.re, '\0$1\0').replace(/\0$/,'').replace(/^\0/,'').split('\0');
+    const yN = y.replace(NaturalSort.re, '\0$1\0').replace(/\0$/,'').replace(/^\0/,'').split('\0');
 
-        if (yD) {
-            if (xD < yD) { return -1; }
-            else if (xD > yD) { return 1; }
+    const xD = parseInt((<any>x).match(NaturalSort.hre), 16) || (xN.length !== 1 && Date.parse(x));
+    const yD = parseInt((<any>y).match(NaturalSort.hre), 16) || xD && y.match(NaturalSort.dre) && Date.parse(y) || null;
+
+    /* Date */
+    if (yD) { if (xD < yD) { return -1; } else if (xD > yD) { return 1; } }
+
+    /* Iterate */
+    const xNl = xN.length;
+    const yNl = yN.length;
+    const xyNMax = Math.max(xNl, yNl);
+
+    for (let i = 0; i < xyNMax; i++) {
+
+      let oFxNcL = NaturalSort.normChunk(xN[i] || '', xNl);
+      let oFyNcL = NaturalSort.normChunk(yN[i] || '', yNl);
+
+      let oFxNcLS = '' + oFxNcL;
+      let oFyNcLS = '' + oFyNcL;
+
+      const oFxNcLSL = oFxNcLS.length;
+      const oFyNcLSL = oFyNcLS.length;
+
+      if (oFxNcLSL !== oFyNcLSL && (oFxNcLS[0] === '0' || oFyNcLS[0] === '0')) {
+        const max = Math.max(oFxNcLSL, oFyNcLSL);
+        oFxNcLS = NaturalSort.fill(oFxNcLS, max);
+        oFxNcL = typeof oFxNcL === 'number' ? parseFloat(oFxNcLS) : oFxNcLS;
+        oFyNcLS = NaturalSort.fill(oFyNcLS, max);
+        oFyNcL = typeof oFyNcLS === 'number' ? parseFloat(oFyNcLS) : oFyNcLS;
+      }
+
+      if ((x || '').match(NaturalSort.dot) !== null && (y || '').match(NaturalSort.dot) !== null) {
+        return this.dotted(('' + x).split('.'), ('' + y).split('.'));
+      }
+
+      if (isNaN(oFxNcL) !== isNaN(oFyNcL)) {
+        return isNaN(oFxNcL) ? 1 : -1;
+      }
+
+      if (/[^\x00-\x80]/.test(oFxNcL + oFyNcL) && oFxNcL.localeCompare) {
+        const comp = oFxNcL.localeCompare(oFyNcL);
+        return comp / Math.abs(comp);
+      }
+
+      if (oFxNcL < oFyNcL) {
+        return -1;
+      } else if (oFxNcL > oFyNcL) {
+        return 1;
+      }
+
+    }
+
+  }
+
+  private static dotted(a: any[], b: any[]): number {
+    a.reverse();
+    b.reverse();
+    const count  = Math.max(a.length, b.length);
+    let result = 0;
+    for (let i = 0; i < count; i++) {
+      let dx = a[i];
+      let dy = b[i];
+      if (dx !== dy) {
+        if (dx.length !== dy.length && (dx[0] === '0' || dy[0] === '0')) {
+          const max = Math.max(dx.length, dy.length);
+          dx = NaturalSort.fill(dx, max);
+          dy = NaturalSort.fill(dy, max);
         }
-        for(var cLoc = 0, xNl = xN.length, yNl = yN.length, numS = Math.max(xNl, yNl); cLoc < numS; cLoc++) {
-            NaturalSort.oFxNcL = NaturalSort.normChunk(xN[cLoc] || '', xNl);
-            NaturalSort.oFyNcL = NaturalSort.normChunk(yN[cLoc] || '', yNl);
-            if (isNaN(NaturalSort.oFxNcL) !== isNaN(NaturalSort.oFyNcL)) {
-                return isNaN(NaturalSort.oFxNcL) ? 1 : -1;
-            }
-            if (/[^\x00-\x80]/.test(NaturalSort.oFxNcL + NaturalSort.oFyNcL) && NaturalSort.oFxNcL.localeCompare) {
-                var comp = NaturalSort.oFxNcL.localeCompare(NaturalSort.oFyNcL);
-                return comp / Math.abs(comp);
-            }
-            if (NaturalSort.oFxNcL < NaturalSort.oFyNcL) { return -1; }
-            else if (NaturalSort.oFxNcL > NaturalSort.oFyNcL) { return 1; }
-        }
+        result = parseFloat(dx) < parseFloat(dy) ? -1 : 1;
+      }
     }
+    return result;
+  }
 
-    private static i(s: any) {
-        return (('' + s).toLowerCase() || '' + s).replace(NaturalSort.sre, '');
+  private static fill(s: string, c: number): string {
+    for (let i = s.length; i < c; i++) {
+      s += '0';
     }
+    return s;
+  }
 
-    private static normChunk(s: any, l: any) {
-        return (!s.match(NaturalSort.ore) || l == 1) && parseFloat(s) || s.replace(NaturalSort.snre, ' ').replace(NaturalSort.sre, '') || 0;
-    }
+  private static i(s: any, insensitive: boolean) {
+    return (insensitive && ('' + s).toLowerCase() || '' + s).replace(NaturalSort.sre, '');
+  }
+
+  private static normChunk(s: any, l: any) {
+    return (!s.match(NaturalSort.ore) || l == 1) && parseFloat(s) || s.replace(NaturalSort.snre, ' ').replace(NaturalSort.sre, '') || 0;
+  }
 
 }

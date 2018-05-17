@@ -14,3 +14,4 @@ Thumbs.db
 .history
 !/karma.conf.js
 !/gruntfile.js
+/coverage/

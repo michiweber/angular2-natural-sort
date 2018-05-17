@@ -17,3 +17,5 @@ Thumbs.db
 /package-lock.json
 /node_modules/
 /tsconfig.json
+/coverage/
+/.idea/

@@ -1,8 +1,9 @@
 {
   "name": "angular2-natural-sort",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "An angular2 approach for javascript-natural-sort",
   "scripts": {
+    "prepublish": "tsc",
     "grunt": "grunt"
   },
   "repository": {
@@ -23,10 +24,8 @@
   },
   "homepage": "https://github.com/michiweber/angular2-natural-sort#readme",
   "dependencies": {},
-  "files": [
-    "dist/"
-  ],
-  "main": "dist/index.js",
+  "main": "index.ts",
+  "types": "index.d.ts",
   "devDependencies": {
     "grunt": "^1.0.1",
     "grunt-contrib-clean": "^1.1.0",

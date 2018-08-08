@@ -64,7 +64,9 @@ export class NaturalSort {
 
       if (/[^\x00-\x80]/.test(oFxNcL + oFyNcL) && oFxNcL.localeCompare) {
         const comp = oFxNcL.localeCompare(oFyNcL);
-        return comp / Math.abs(comp);
+        if (comp !== 0) {
+          return comp / Math.abs(comp);
+        }
       }
 
       if (oFxNcL < oFyNcL) {

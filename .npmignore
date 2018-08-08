@@ -8,12 +8,12 @@ Thumbs.db
 
 # Ignored files
 !*.d.ts
-!/index.ts
+!/src/index.ts
 /gruntfile.js
 /tslint.json
 /.editorconfig
 /karma.conf.js
-/index.spec.ts
+/src/index.spec.ts
 /package-lock.json
 /node_modules/
 /tsconfig.json

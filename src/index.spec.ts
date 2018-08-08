@@ -311,7 +311,7 @@ describe('NaturalSort', () => {
       expect(['The Wind in the Willows', 'The 40th step more', 'The 39 steps', 'Wanda'].sort((a,b) => NaturalSort.SORT(a, b))).toEqual(['The 39 steps', 'The 40th step more', 'The Wind in the Willows', 'Wanda']);
     });
     it('Equivalent accented characters (and case) (naturalSort.insensitive = true)', () => {
-      expect(['Equiv. \xfd accents: 2-2', 'Equiv. \xdd accents: 2-1', 'Equiv. y accents: 2+0', 'Equiv. Y accents: 2+1'].sort((a,b) => NaturalSort.SORT(a, b, true))).toEqual(['Equiv. y accents: 2+0', 'Equiv. Y accents: 2+1', 'Equiv. \xfd accents: 2-2', 'Equiv. \xdd accents: 2-1']);
+      expect(['Equiv. \xfd accents: 2-2', 'Equiv. \xdd accents: 2-1', 'Equiv. y accents: 2+0', 'Equiv. Y accents: 2+1'].sort((a,b) => NaturalSort.SORT(a, b, true))).toEqual(['Equiv. y accents: 2+0', 'Equiv. Y accents: 2+1', 'Equiv. \xdd accents: 2-1', 'Equiv. \xfd accents: 2-2']);
     });
   });
   describe('contributed tests', () => {
@@ -401,6 +401,9 @@ describe('NaturalSort', () => {
   describe('michiweber issues', () => {
     it('issue #1', () => {
       expect(['18_0306 Lunchuno (Office Delivery)', '18_0307 Cha Cha Portfoliobereinigung', '18_04 Freizeit', '18_10 EBB', '18_0305 Struktur und Organisation Gastronomie', '18_0401 Strategy Bad 2020'].sort((a, b) => NaturalSort.SORT(a, b))).toEqual(['18_0305 Struktur und Organisation Gastronomie', '18_0306 Lunchuno (Office Delivery)', '18_0307 Cha Cha Portfoliobereinigung', '18_04 Freizeit', '18_0401 Strategy Bad 2020', '18_10 EBB']);
+    });
+    it('issue #2', () => {
+      expect(['Änderung 2', 'Änderung 1', 'Änderung 3', '3 Änderung'].sort((a, b) => NaturalSort.SORT(a, b))).toEqual(['3 Änderung', 'Änderung 1', 'Änderung 2', 'Änderung 3']);
     });
   });
 });

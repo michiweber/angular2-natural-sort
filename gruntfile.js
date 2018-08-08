@@ -6,7 +6,7 @@ module.exports = function(grunt) {
       app: {
         files: [
           {
-            src: ["/\*.ts"],
+            src: ["src/\*\*/\*.ts", "!src/.baseDir.ts", "!src/test/\*\*/\*.ts"],
             dest: "./dist"
           }
         ],
@@ -20,7 +20,7 @@ module.exports = function(grunt) {
       test: {
         files: [
           {
-            src: ["\*.ts"],
+            src: ["src/\*.ts", "!src/test/.baseDir.ts"],
             dest: "./"
           }
         ],

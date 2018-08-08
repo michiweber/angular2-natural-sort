@@ -32,6 +32,12 @@ module.exports = function(grunt) {
         }
       }
     },
+    copy: {
+      main: {
+        src: 'src/index.ts',
+        dest: 'index.ts'
+      },
+    },
     clean: ['dist', 'test'],
     karma: {
       unit: {
@@ -43,8 +49,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks("grunt-ts");
   grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-contrib-copy');
 
-  grunt.registerTask("default", ["clean", "ts:app"]);
+  grunt.registerTask("default", ["clean", "ts:app", "copy"]);
   grunt.registerTask("test", ["karma"]);
 
 };
